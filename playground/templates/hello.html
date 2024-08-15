@@ -11,5 +11,34 @@
     {% else %}
       <h1>hello Storefront</h1>
     {% endif %}
+    <ul>
+      {% for membership in  membership %}
+        <li>{{ membership.first_name}}</li>
+        {% endfor %}
+      
+    </ul>
+   
+      
+      <table>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Birth Date</th>
+          <th>Membership</th>
+        </tr>
+         {% for customer in customer %}
+        <tr style="color: blue;">
+          <td>{{ customer.first_name }}</td>
+          <td>{{ customer.last_name }}</td>
+          <td><a href="mailto:{{ customer.email }}" style="text-decoration: none;">{{ customer.email }}</a></td>
+          <td>{{ customer.phone }}</td>
+          <td>{{ customer.birth_date }}</td>
+          <td>{{ customer.membership }}</td>
+        </tr>
+          {% endfor %}
+      </table>
+  
   </body>
 </html>
