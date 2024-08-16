@@ -33,6 +33,12 @@ class Product(models.Model):
     )
     promotions = models.ManyToManyField("Promotion")
 
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ["title"]
+
 
 class Customer(models.Model):
     MEMBERSHIP_BRONZE = "B"
@@ -52,11 +58,15 @@ class Customer(models.Model):
         max_length=18, choices=MEMBERSHIP_CHOICES, default="MEMBERSHIP_BRONZE"
     )
 
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
     class Meta:
         db_table = "store_customers"
         indexes = [
             models.Index(fields=["last_name", "first_name"]),
         ]
+        ordering = ["first_name", "last_name"]
 
 
 class Order(models.Model):
@@ -92,13 +102,17 @@ class Address(models.Model):
 
 
 class Collection(models.Model):
-    title = models.CharField(max_length=120)
+    title = models.CharField(max_length=120, null=True, blank=True)
     featured_product = models.ForeignKey(
         Product,
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
         related_name="+",
     )
+
+    def __str__(self):
+        return self.title
 
 
 class Cart(models.Model):
@@ -112,5 +126,5 @@ class CartItem(models.Model):
 
 
 class Promotion(models.Model):
-    description = models.CharField(max_length=255)
-    discount = models.FloatField()
+    description = models.CharField(max_length=255, null=True, blank=True)
+    discount = models.FloatField(null=True, blank=True)
