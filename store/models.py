@@ -23,7 +23,7 @@ from django.db import models
 
 class Product(models.Model):
     title = models.CharField(max_length=120)
-    slug = models.SlugField(default="-")
+    slug = models.SlugField(default="")
     content = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=6, decimal_places=2, default=99.99)
     inventory = models.IntegerField(default=0)
