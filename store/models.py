@@ -128,3 +128,8 @@ class CartItem(models.Model):
 class Promotion(models.Model):
     description = models.CharField(max_length=255, null=True, blank=True)
     discount = models.FloatField(null=True, blank=True)
+
+    def __self__(self):
+        return self.description
+    
+    
