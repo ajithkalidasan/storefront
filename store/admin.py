@@ -85,7 +85,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
 @admin.register(Collection)
 class CollectionAdmin(admin.ModelAdmin):
-    list_display = ["title", "featured_product", "products_count"]
+    list_display = ["id","title", "featured_product", "products_count"]
     list_editable = ["featured_product"]
     list_per_page = 10
     search_fields = ["title"]
