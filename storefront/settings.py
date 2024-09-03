@@ -41,11 +41,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "rest_framework",
     "debug_toolbar",
+    "django_filters",
     "playground.apps.PlaygroundConfig",
     "store.apps.StoreConfig",
     "tags.apps.TagsConfig",
     "likes.apps.LikesConfig",
     "store_custom.apps.StoreCustomConfig",
+    
     
 ]
 
@@ -136,4 +138,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     "COERCE_DECIMAL_TO_STRING": False,  
+    
 }

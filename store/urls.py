@@ -6,7 +6,7 @@ from . import views
 
 # Main router
 router = DefaultRouter()
-router.register('products', views.ProductViewSet)
+router.register('products', views.ProductViewSet, basename='product')
 router.register('collections', views.CollectionViewSet)
 
 # Nested router for product reviews
