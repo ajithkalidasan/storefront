@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "store_custom.apps.StoreCustomConfig",
     
     
+    
 ]
 
 MIDDLEWARE = [
