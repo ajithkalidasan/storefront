@@ -3,10 +3,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.mixins import CreateModelMixin
+from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from .models import Product, Collection, Review, CartItem, Cart
-from .serializers import ProductSerializer, CollectionSerializer, ReviewSerializer, CartSerializer, CartItemSerializer
+from .serializers import ProductSerializer, CollectionSerializer, ReviewSerializer, CartSerializer, CartItemSerializer, CustomerSerializer
 
 from .utils import DefaultPagination, ProductFilter, CollectionFilter
 
@@ -76,4 +76,8 @@ class CardItemViewSet(ModelViewSet):
         return CartItem.objects\
             .filter(cart_id=self.kwargs.get("cart_pk"))\
             .select_related("product")
+            
+class CustomerViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+    queryset = Cart.objects.all()
+    serializer_class = CustomerSerializer
     

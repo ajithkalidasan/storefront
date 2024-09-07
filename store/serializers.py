@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from decimal import Decimal
-from .models import Product, Collection, Review, CartItem, Cart
+from .models import Product, Collection, Review, CartItem, Cart, Customer
 
 
 class CollectionSerializer(serializers.ModelSerializer):
@@ -58,3 +58,11 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = ['id', 'items', 'total_price']
+        
+
+class CustomerSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField()
+    class Meta:
+        model = Customer
+        fields = ['id', 'user_id', 'phone', 'birth_date', 'membership']
+        read_only_fields = ['id']  # These fields will be read-only

@@ -1,4 +1,6 @@
 from django.contrib import admin, messages
+from django.contrib.auth.models import User
+
 from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html, urlencode
@@ -64,24 +66,7 @@ class InventoryFilter(admin.SimpleListFilter):
             return queryset.filter(inventory__lt=10)
 
 
-@admin.register(Customer)
-class CustomerAdmin(admin.ModelAdmin):
-    list_display = ["first_name", "last_name", "membership", "orders_count"]
-    list_editable = ["membership"]
-    list_per_page = 10
-    search_fields = ["first_name__istartswith", "last_name__istartswith", "email"]
 
-    @admin.display(ordering="orders_count")
-    def orders_count(self, customer):
-        url = (
-            reverse("admin:store_order_changelist")
-            + "?"
-            + urlencode({"customer_id": str(customer.id)})
-        )
-        return format_html('<a href="{}">{}</a>', url, customer.orders_count)
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).annotate(orders_count=Count("order"))
 
 
 @admin.register(Collection)
@@ -165,16 +150,9 @@ class OrderItemInline(admin.TabularInline):
     extra = 0
 
 
-@admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
-    autocomplete_fields = ["customer"]
-    inlines = [
-        OrderItemInline,
-    ]
-    list_display = ["id", "customer", "placed_at", "payment_status"]
-    list_editable = ["payment_status"]
-    list_per_page = 10
-    search_fields = ["customer__first_name", "customer__last_name"]
+
+
+   
 
 
 admin.site.register(OrderItem)
@@ -182,3 +160,5 @@ admin.site.register(Address)
 admin.site.register(Cart)
 admin.site.register(CartItem)
 admin.site.register(Review)
+admin.site.register(Order)
+admin.site.register(Customer)

@@ -7,8 +7,9 @@ from . import views
 # Main router
 router = DefaultRouter()
 router.register("products", views.ProductViewSet, basename="product")
-router.register("collections", views.CollectionViewSet)
-router.register("cart", views.CartViewSet)
+router.register("collections", views.CollectionViewSet, basename="collection")
+router.register("cart", views.CartViewSet, basename="cart")
+router.register("customers", views.CustomerViewSet, basename="customer")
 
 # Nested router for product reviews
 products_router = NestedSimpleRouter(router, "products", lookup="product")

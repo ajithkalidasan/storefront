@@ -18,6 +18,7 @@ Usage:
 
 from django.db import models
 from uuid import uuid4
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -50,24 +51,20 @@ class Customer(models.Model):
         ("MEMBERSHIP_SILVER", "Silver"),
         ("MEMBERSHIP_GOLD", "Gold"),
     )
-    first_name = models.CharField(max_length=120)
-    last_name = models.CharField(max_length=120)
-    email = models.EmailField(unique=True)
+    
     phone = models.CharField(max_length=120)
     birth_date = models.DateField(null=True)
     membership = models.CharField(
         max_length=18, choices=MEMBERSHIP_CHOICES, default="MEMBERSHIP_BRONZE"
     )
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return self.user.username
 
     class Meta:
-        db_table = "store_customers"
-        indexes = [
-            models.Index(fields=["last_name", "first_name"]),
-        ]
-        ordering = ["first_name", "last_name"]
+       
+        ordering = ["user__first_name", "user__last_name"]
 
 
 class Order(models.Model):
@@ -84,6 +81,13 @@ class Order(models.Model):
         max_length=30, choices=PAYMENT_STATUS_CHOICES, default="PAYMENT_STATUS_PENDING"
     )
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
+    def __str__(self):
+        return self.customer.user.username
+    class Meta:
+        permissions = [
+            ("cancel_order", "Can cancel order"),
+            
+        ]
 
 
 class OrderItem(models.Model):
@@ -91,6 +95,9 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     quantity = models.PositiveSmallIntegerField()
     unit_price = models.DecimalField(max_digits=6, decimal_places=2)
+    
+    def __str__(self):
+        return f"{self.quantity} of {self.product.title}"
 
 
 class Address(models.Model):

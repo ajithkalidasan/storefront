@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,15 +42,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "rest_framework",
     "debug_toolbar",
+    "djoser",
     "django_filters",
     "playground.apps.PlaygroundConfig",
     "store.apps.StoreConfig",
     "tags.apps.TagsConfig",
     "likes.apps.LikesConfig",
     "store_custom.apps.StoreCustomConfig",
-    
-    
-    
 ]
 
 MIDDLEWARE = [
@@ -138,6 +137,24 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 REST_FRAMEWORK = {
-    "COERCE_DECIMAL_TO_STRING": False,  
-    
+    "COERCE_DECIMAL_TO_STRING": False,
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
+
+SIMPLE_JWT = {
+   'AUTH_HEADER_TYPES': ('JWT',),
+}
+
+DJOSER = {
+    "SERIALIZERS": {
+        "user_create": "store_custom.serializers.UserCreateSerializer",
+        # "current_user": "store.serializers.UserSerializer",
+    }
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=5),
 }
