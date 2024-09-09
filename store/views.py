@@ -1,11 +1,13 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from .models import Product, Collection, Review, CartItem, Cart
+from .models import Product, Collection, Review, CartItem, Cart, Customer
 from .serializers import ProductSerializer, CollectionSerializer, ReviewSerializer, CartSerializer, CartItemSerializer, CustomerSerializer
 
 from .utils import DefaultPagination, ProductFilter, CollectionFilter
@@ -80,4 +82,21 @@ class CardItemViewSet(ModelViewSet):
 class CustomerViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     queryset = Cart.objects.all()
     serializer_class = CustomerSerializer
+    permission_classes = [IsAuthenticated]
+    
+    @action(detail=False, methods=["GET", "PUT", "DELETE"],)
+    def me(self, request):
+        customer = Customer.objects.get(user_id=request.user.id)
+        
+        if request.method == "GET":
+            serializer = CustomerSerializer(customer)
+            
+            return Response(serializer.data)
+        elif request.method == "PUT":
+            serializer = CustomerSerializer(customer, data=request.data)
+            
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            
+            return Response(serializer.data)
     
