@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import permissions
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
@@ -9,7 +9,7 @@ from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, UpdateMo
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from .models import Product, Collection, Review, CartItem, Cart, Customer
 from .serializers import ProductSerializer, CollectionSerializer, ReviewSerializer, CartSerializer, CartItemSerializer, CustomerSerializer
-
+from .permissions import IsAdminOrReadOnly
 from .utils import DefaultPagination, ProductFilter, CollectionFilter
 
 
@@ -19,6 +19,7 @@ class ProductViewSet(ModelViewSet):
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = ProductFilter
+    permission_classes =[IsAdminOrReadOnly]
     pagination_class = DefaultPagination
     search_fields = ["title", "collection__title"]
     ordering_fields = ["price", "last_updated"]
@@ -38,7 +39,8 @@ class CollectionViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = CollectionFilter
     pagination_class = DefaultPagination
-
+    permission_classes =[IsAdminOrReadOnly]
+    
     def get_serializer_context(self):
         return {"request": self.request}
 
@@ -79,12 +81,12 @@ class CardItemViewSet(ModelViewSet):
             .filter(cart_id=self.kwargs.get("cart_pk"))\
             .select_related("product")
             
-class CustomerViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+class CustomerViewSet(ModelViewSet):
     queryset = Cart.objects.all()
     serializer_class = CustomerSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAdminUser]
     
-    @action(detail=False, methods=["GET", "PUT", "DELETE"],)
+    @action(detail=False, methods=["GET", "PUT", "DELETE"], permission_classes=[permissions.IsAuthenticated])
     def me(self, request):
         customer = Customer.objects.get(user_id=request.user.id)
         
