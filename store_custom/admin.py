@@ -3,6 +3,7 @@ from django.contrib.contenttypes.admin import GenericTabularInline
 from store.admin import ProductAdmin
 from tags.models import TaggedItem
 from store.models import Product
+from store.admin import ProductImageInLine
 
 
 # Register your models here.
@@ -13,7 +14,7 @@ class TagInline(GenericTabularInline):
 
 
 class CustomProductAdmin(ProductAdmin):
-    inlines = [TagInline]
+    inlines = [TagInline, ProductImageInLine]
 
 
 admin.site.unregister(Product)

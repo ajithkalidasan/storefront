@@ -11,15 +11,22 @@ class CollectionSerializer(serializers.ModelSerializer):
         model = Collection
         fields = ["id", "title"]
 
-
+class ProductImageSerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        product_id = self.context["product_id"]
+        return models.ProductImage.objects.create(product_id=product_id, **validated_data)
+    class Meta:
+        model = models.ProductImage
+        fields = ["id", "image", ]
 class ProductSerializer(serializers.ModelSerializer):
     price_with_tax = serializers.SerializerMethodField(method_name="calculated_tax")
     collection = serializers.StringRelatedField()
+    images = ProductImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
 
-        fields = ["id", "title", "price", "price_with_tax", "collection"]
+        fields = ["id", "title", "price", "price_with_tax", "collection", "images"]
 
     def create(self, validated_data):
         collection_id = self.context["collection_id"]
@@ -136,3 +143,6 @@ class CreateOrderSerializer(serializers.Serializer):
             Cart.objects.filter(pk= card_id).delete()
             order_created.send_robust(self.__class__, order=order)
             return order
+        
+
+        

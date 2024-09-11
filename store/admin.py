@@ -1,6 +1,6 @@
 from django.contrib import admin, messages
 from django.contrib.auth.models import User
-
+from django.contrib.contenttypes.admin import GenericTabularInline
 from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html, urlencode
@@ -15,6 +15,7 @@ from .models import (
     Cart,
     CartItem,
     Review,
+    ProductImage
 )
 
 
@@ -89,11 +90,23 @@ class CollectionAdmin(admin.ModelAdmin):
         return super().get_queryset(request).annotate(products_count=Count("products"))
 
 
+class ProductImageInLine(admin.TabularInline):
+    model = ProductImage
+    readonly_fields = ["thumbnail"]
+    
+    def thumbnail(self, instance):
+        if instance.image !='':
+            return format_html(
+                f'<img src="{instance.image.url}" class="thumbnail"/>'
+            )
+        return "No image"
+    
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ["title"]}
     autocomplete_fields = ["collection"]
     actions = ["clear_inventory", "update_inventory"]
+    inlines = [ProductImageInLine]
     list_display = ["title", "price", "inventory_status", "collection_list"]
     list_editable = ["price"]
     list_filter = [
@@ -132,6 +145,8 @@ class ProductAdmin(admin.ModelAdmin):
             return "Out of stock"
         else:
             return "OK"
+    class Media:
+        css = {"all": ["store/style.css"]}
 
 
 @admin.register(Promotion)

@@ -16,14 +16,14 @@ from .serializers import (
     CartItemSerializer,
     CustomerSerializer,
 )
-from . import serializers
+from . import serializers, models
 from .permissions import IsAdminOrReadOnly
 from .utils import DefaultPagination, ProductFilter, CollectionFilter
 
 
 # Create your views here.
 class ProductViewSet(ModelViewSet):
-    queryset = Product.objects.all()
+    queryset = Product.objects.prefetch_related("images").all()
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = ProductFilter
@@ -149,3 +149,14 @@ class OrderViewSet(ModelViewSet):
         elif self.request.method == "PATCH":
             return serializers.UpdateOderSerializer
         return serializers.OrderSerializer
+    
+class ProductImageViewSet(ModelViewSet):
+    queryset = models.ProductImage.objects.all()
+    serializer_class = serializers.ProductImageSerializer
+    
+    def get_queryset(self):
+        return models.ProductImage.objects.filter(product_id=self.kwargs["product_pk"])
+
+    
+    def get_serializer_context(self):
+        return {"product_id": self.kwargs["product_pk"]}
