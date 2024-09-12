@@ -1,13 +1,22 @@
+from django.core.mail import EmailMessage, BadHeaderError
 from django.shortcuts import render
+from templated_mail.mail import BaseEmailMessage
 from django.http import HttpResponse
-from store.models import Customer, Product
+
 
 
 # Create your views here.
 def hello(request):
-    # customer = Customer.objects.all()[:10]
-    customer = Customer.objects.values("first_name",  "email")[:10]
-    product = Product.objects.filter(pk=1).first()
-    membership = Customer.objects.filter(membership="G")[:10]
-    context = {"customer": customer, "product": product, "membership": membership}
-    return render(request, "hello.html", context)
+    
+    try:
+       message = BaseEmailMessage(
+           template_name= 'email/hello.html',
+           context= {'name': 'Ajith'}
+           
+       )
+       message.send(["XGqB0@example.com"])
+    except BadHeaderError:
+        return HttpResponse("Invalid header found.")
+    
+    # send_mail("hello", "hello", "XGqB0@example.com", ["XGqB0@example.com"], fail_silently=False)
+    return render(request, "hello.html")
