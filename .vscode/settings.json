@@ -2,5 +2,10 @@
     "cSpell.words": [
         "filterset",
         "viewsets"
-    ]
+    ],
+    "python.testing.pytestArgs": [
+        "."
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }
