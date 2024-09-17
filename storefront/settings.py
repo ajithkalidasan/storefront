@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+
 import os
 from pathlib import Path
 from datetime import timedelta
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "debug_toolbar",
     "djoser",
+    "silk",
     "django_filters",
     "playground.apps.PlaygroundConfig",
     "store.apps.StoreConfig",
@@ -63,12 +65,13 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
+    
 ]
-
+if DEBUG:
+    MIDDLEWARE += ["silk.middleware.SilkyMiddleware",]
 ROOT_URLCONF = "storefront.urls"
 
 CORS_ALLOWED_ORIGINS = [
-
     "http://localhost:8001",
     "http://127.0.0.1:8001",
 ]
@@ -164,9 +167,9 @@ DJOSER = {
 }
 
 SIMPLE_JWT = {
-    'AUTH_HEADER_TYPES': ('JWT',),
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=5),
+    "AUTH_HEADER_TYPES": ("JWT",),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=5),
 }
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -184,7 +187,9 @@ CELERY_BROKER_URL = "redis://localhost:6379/1"
 CELERY_BEAT_SCHEDULE = {
     "notify_customers": {
         "task": "playground.tasks.notify_customers",
-        "schedule":5,
-        "args": ["hello",],
+        "schedule": 5,
+        "args": [
+            "hello",
+        ],
     },
 }
