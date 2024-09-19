@@ -3,3 +3,8 @@ Pipfile.lock
 Pipfile
 
 __pycache__/
+
+/media/
+/static/
+
+storefront.log

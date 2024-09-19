@@ -4,13 +4,22 @@ from django.utils.decorators import method_decorator
 from rest_framework.views import APIView
 from .tasks import notify_customer
 import requests
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 
 class HelloView(APIView):
-    @method_decorator(cache_page(5*60))
+    
     def get(self, request):
-        response = requests.get("https://httpbin.org/delay/2")   
-        data = response.json()
+        try:
+            logger.info("Callinf httpbib")
+            response = requests.get("https://httpbin.org/delay/2") 
+            logger.info("Getting htttp.bin")  
+            data = response.json()
+        except requests.ConnectionError:
+            logger.critical("Connection error")
     
         # Pass the API data to the template
         return render(request, "hello.html", {'name': "data"})

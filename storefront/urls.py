@@ -22,14 +22,15 @@ from django.urls import path, include
 from debug_toolbar import urls as debug_toolbar_urls
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('playground/', include('playground.urls')),
-    path('store/', include('store.urls')),
-    path('auth/', include('djoser.urls')),
-    path('auth/', include('djoser.urls.jwt')),
-    path('__debug__/', include(debug_toolbar_urls)),
+    path("admin/", admin.site.urls),
+    path("", include("store_custom.urls")),
+    path("playground/", include("playground.urls")),
+    path("store/", include("store.urls")),
+    path("auth/", include("djoser.urls")),
+    path("auth/", include("djoser.urls.jwt")),
+    path("__debug__/", include(debug_toolbar_urls)),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += [path('silk/', include('silk.urls', namespace='silk'))]
+    urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]

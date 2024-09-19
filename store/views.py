@@ -160,3 +160,4 @@ class ProductImageViewSet(ModelViewSet):
     
     def get_serializer_context(self):
         return {"product_id": self.kwargs["product_pk"]}
+    
